@@ -51,6 +51,10 @@ public class Character {
         image = new ImageTask().execute(imageUrl).get();
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }

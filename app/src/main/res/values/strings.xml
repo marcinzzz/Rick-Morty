@@ -5,7 +5,7 @@
     <string name="filter">Filter</string>
 
     <string-array name="status">
-        <item></item>
+        <item>All</item>
         <item>Alive</item>
         <item>Dead</item>
         <item>unknown</item>

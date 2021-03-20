@@ -20,8 +20,9 @@ import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
     private ListView charactersListView;
-    private MyArrayAdapter charactersAdapter;
+    private Spinner statusSpinner;
     private InfoDialog infoDialog;
+    private Character[] characters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,15 +43,16 @@ public class MainActivity extends AppCompatActivity {
             ObjectMapper mapper = new ObjectMapper();
             Data data = mapper.readValue(json, Data.class);
 
-            for (Character character : data.getCharacters())
+            characters = data.getCharacters();
+            for (Character character : characters)
                 character.downloadImage();
 
-            makeListView(data.getCharacters());
+            charactersListView.setAdapter(new MyArrayAdapter(this, data.getCharacters()));
         } catch (JsonProcessingException | ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 
-        Spinner statusSpinner = findViewById(R.id.spinner_status);
+        statusSpinner = findViewById(R.id.spinner_status);
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(
                 this,
                 R.array.status,
@@ -61,18 +63,20 @@ public class MainActivity extends AppCompatActivity {
 
         Button filterButton = findViewById(R.id.button_filter);
         filterButton.setOnClickListener((v) -> {
-            List<Character> filtered = new LinkedList<>();
-            for (Character character : charactersAdapter.getValues()) {
-                if (character.getStatus().equals(statusSpinner.getSelectedItem()))
-                    filtered.add(character);
-            }
-            Character[] characters = filtered.toArray(new Character[0]);
-            makeListView(characters);
+            Character[] filtered = filterStatus((String) statusSpinner.getSelectedItem());
+            charactersListView.setAdapter(new MyArrayAdapter(this, filtered));
         });
     }
 
-    private void makeListView(Character[] characters) {
-        charactersAdapter = new MyArrayAdapter(this, characters);
-        charactersListView.setAdapter(charactersAdapter);
+    private Character[] filterStatus(String status) {
+        if (status.equals(getResources().getStringArray(R.array.status)[0]))
+            return characters;
+
+        List<Character> filtered = new LinkedList<>();
+        for (Character character : characters) {
+            if (character.getStatus().equals(status))
+                filtered.add(character);
+        }
+        return filtered.toArray(new Character[0]);
     }
 }
