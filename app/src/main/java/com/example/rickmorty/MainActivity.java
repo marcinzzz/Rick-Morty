@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
+    private InfoDialog infoDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
             ListView listView = findViewById(R.id.view_list);
             listView.setAdapter(arrayAdapter);
             listView.setOnItemClickListener((parent, view, position, id) -> {
-
+                Character character = (Character) parent.getAdapter().getItem(position);
+                infoDialog = new InfoDialog(this, character);
+                infoDialog.show();
             });
         }
     }

@@ -55,6 +55,30 @@ public class Character {
         return name;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public String getSpecies() {
+        return species;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public Origin getOrigin() {
+        return origin;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
     public Bitmap getImage() {
         return image;
     }

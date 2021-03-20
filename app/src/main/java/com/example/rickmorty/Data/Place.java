@@ -8,4 +8,8 @@ public class Place {
 
     @JsonProperty("url")
     String url;
+
+    public String getName() {
+        return name;
+    }
 }
