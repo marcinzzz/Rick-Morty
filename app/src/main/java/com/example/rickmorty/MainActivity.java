@@ -3,7 +3,6 @@ package com.example.rickmorty;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.example.rickmorty.Data.Character;
@@ -22,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
 
         String json;
         MyArrayAdapter arrayAdapter = null;
-        Character one = null;
         try {
             json = new JsonTask().execute("https://rickandmortyapi.com/api/character/").get();
             ObjectMapper mapper = new ObjectMapper();
@@ -30,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
             for (Character character : data.getCharacters())
                 character.downloadImage();
             arrayAdapter = new MyArrayAdapter(this, data.getCharacters());
-            one = data.getCharacters()[0];
         } catch (JsonProcessingException | ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }

@@ -11,8 +11,6 @@ import android.widget.TextView;
 
 import com.example.rickmorty.Data.Character;
 
-import java.util.concurrent.ExecutionException;
-
 public class MyArrayAdapter extends ArrayAdapter<Character> {
     private final Context context;
     private final Character[] values;

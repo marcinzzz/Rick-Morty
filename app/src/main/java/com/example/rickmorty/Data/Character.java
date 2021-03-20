@@ -1,7 +1,6 @@
 package com.example.rickmorty.Data;
 
 import android.graphics.Bitmap;
-import android.widget.ImageView;
 
 import com.example.rickmorty.ImageTask;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -4,30 +4,20 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ImageView;
 
 import java.io.InputStream;
 
 public class ImageTask extends AsyncTask<String, Void, Bitmap> {
-//    private ImageView bmImage;
-//
-//    public ImageTask(ImageView bmImage) {
-//        this.bmImage = bmImage;
-//    }
-
+    @Override
     protected Bitmap doInBackground(String... urls) {
-        String urldisplay = urls[0];
+        String url = urls[0];
         Bitmap mIcon11 = null;
         try {
-            InputStream in = new java.net.URL(urldisplay).openStream();
+            InputStream in = new java.net.URL(url).openStream();
             mIcon11 = BitmapFactory.decodeStream(in);
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
         }
         return mIcon11;
     }
-
-//    protected void onPostExecute(Bitmap result) {
-//        bmImage.setImageBitmap(result);
-//    }
 }
