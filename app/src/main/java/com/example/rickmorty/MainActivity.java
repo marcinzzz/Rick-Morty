@@ -2,12 +2,16 @@ package com.example.rickmorty;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.rickmorty.Data.Character;
 import com.example.rickmorty.Data.Data;
@@ -36,20 +40,57 @@ public class MainActivity extends AppCompatActivity {
             infoDialog.show();
         });
 
-        String json;
-        try {
-            json = new JsonTask().execute("https://rickandmortyapi.com/api/character/").get();
+        ConnectivityManager cm =
+                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-            ObjectMapper mapper = new ObjectMapper();
-            Data data = mapper.readValue(json, Data.class);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
-            characters = data.getCharacters();
-            for (Character character : characters)
-                character.downloadImage();
+        String json = null;
+        Data data = null;
+        if (isConnected) {
+            try {
+                json = new JsonTask().execute("https://rickandmortyapi.com/api/character/").get();
+            } catch (ExecutionException | InterruptedException e) {
+                Toast.makeText(
+                        this,
+                        "SOMETHING WENT WRONG, COULDN'T GET CHARACTERS",
+                        Toast.LENGTH_LONG
+                ).show();
+            }
 
-            charactersListView.setAdapter(new MyArrayAdapter(this, data.getCharacters()));
-        } catch (JsonProcessingException | ExecutionException | InterruptedException e) {
-            e.printStackTrace();
+            if (json != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                try {
+                    data = mapper.readValue(json, Data.class);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Toast.makeText(
+                        this,
+                        "SOMETHING WENT WRONG, COULDN'T GET CHARACTERS",
+                        Toast.LENGTH_LONG
+                ).show();
+            }
+
+            if (data != null) {
+                characters = data.getCharacters();
+                try {
+                    for (Character character : characters) {
+                        character.downloadImage();
+                    }
+                    charactersListView.setAdapter(new MyArrayAdapter(this, data.getCharacters()));
+                } catch (ExecutionException | InterruptedException e) {
+                    Toast.makeText(
+                            this,
+                            "SOMETHING WENT WRONG, COULDN'T GET IMAGES",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+            }
+        } else {
+            Toast.makeText(this, "NO INTERNET", Toast.LENGTH_LONG).show();
         }
 
         statusSpinner = findViewById(R.id.spinner_status);
