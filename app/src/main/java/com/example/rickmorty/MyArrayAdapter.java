@@ -6,9 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.rickmorty.Data.Character;
+
+import java.util.concurrent.ExecutionException;
 
 public class MyArrayAdapter extends ArrayAdapter<Character> {
     private final Context context;
@@ -28,8 +31,11 @@ public class MyArrayAdapter extends ArrayAdapter<Character> {
         @SuppressLint("ViewHolder")
         View rowView = inflater.inflate(R.layout.list_item, parent, false);
 
-        TextView textView = rowView.findViewById(R.id.label_name);
-        textView.setText(values[position].getName());
+        TextView textName = rowView.findViewById(R.id.label_name);
+        textName.setText(values[position].getName());
+
+        ImageView imageView = rowView.findViewById(R.id.view_image);
+        imageView.setImageBitmap(values[position].getImage());
 
         return rowView;
     }

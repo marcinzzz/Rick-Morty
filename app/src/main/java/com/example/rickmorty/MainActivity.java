@@ -3,11 +3,15 @@ package com.example.rickmorty;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.example.rickmorty.Data.Character;
 import com.example.rickmorty.Data.Data;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,14 +20,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String json = getJson("https://rickandmortyapi.com/api/character/");
-
+        String json;
         MyArrayAdapter arrayAdapter = null;
+        Character one = null;
         try {
+            json = new JsonTask().execute("https://rickandmortyapi.com/api/character/").get();
             ObjectMapper mapper = new ObjectMapper();
             Data data = mapper.readValue(json, Data.class);
+            for (Character character : data.getCharacters())
+                character.downloadImage();
             arrayAdapter = new MyArrayAdapter(this, data.getCharacters());
-        } catch (JsonProcessingException e) {
+            one = data.getCharacters()[0];
+        } catch (JsonProcessingException | ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -33,19 +41,6 @@ public class MainActivity extends AppCompatActivity {
             listView.setOnItemClickListener((parent, view, position, id) -> {
 
             });
-        }
-    }
-
-    private String getJson(String url) {
-        try {
-            JsonGetter jsonGetter = new JsonGetter(url);
-            Thread thread = new Thread(jsonGetter);
-            thread.start();
-            thread.join();
-            return jsonGetter.getJson();
-        } catch (InterruptedException e) {
-            System.out.println(e.getMessage());
-            return null;
         }
     }
 }

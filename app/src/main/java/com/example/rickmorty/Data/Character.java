@@ -1,8 +1,13 @@
 package com.example.rickmorty.Data;
 
+import android.graphics.Bitmap;
+import android.widget.ImageView;
+
+import com.example.rickmorty.ImageTask;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 public class Character {
     @JsonProperty("id")
@@ -30,7 +35,7 @@ public class Character {
     private Location location;
 
     @JsonProperty("image")
-    private String image;
+    private String imageUrl;
 
     @JsonProperty("episode")
     private String[] episode;
@@ -41,8 +46,18 @@ public class Character {
     @JsonProperty("created")
     private String created;
 
+    private Bitmap image;
+
+    public void downloadImage() throws ExecutionException, InterruptedException {
+        image = new ImageTask().execute(imageUrl).get();
+    }
+
     public String getName() {
         return name;
+    }
+
+    public Bitmap getImage() {
+        return image;
     }
 
     @Override
@@ -56,7 +71,7 @@ public class Character {
                 ", gender='" + gender + '\'' +
                 ", origin=" + origin +
                 ", location=" + location +
-                ", image='" + image + '\'' +
+                ", image='" + imageUrl + '\'' +
                 ", episode=" + Arrays.toString(episode) +
                 ", url='" + url + '\'' +
                 ", created='" + created + '\'' +
