@@ -11,14 +11,29 @@ import android.widget.TextView;
 
 import com.example.rickmorty.Data.Character;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class MyArrayAdapter extends ArrayAdapter<Character> {
     private final Context context;
-    private final Character[] values;
+    private Character[] values;
 
     public MyArrayAdapter(Context context, Character[] values) {
         super(context, -1, values);
         this.context = context;
         this.values = values;
+    }
+
+    public void filterStatus(String status) {
+        List<Character> filtered = new LinkedList<>();
+        for (Character character : values) {
+            if (character.getStatus().equals(status))
+                filtered.add(character);
+        }
+        values = filtered.toArray(new Character[0]);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -36,5 +51,9 @@ public class MyArrayAdapter extends ArrayAdapter<Character> {
         imageView.setImageBitmap(values[position].getImage());
 
         return rowView;
+    }
+
+    public Character[] getValues() {
+        return values;
     }
 }

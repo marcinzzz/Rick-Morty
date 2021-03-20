@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Rick&amp;Morty</string>
+
+    <string name="filter_by">Filter by</string>
+    <string name="filter">Filter</string>
+
+    <string-array name="status">
+        <item></item>
+        <item>Alive</item>
+        <item>Dead</item>
+        <item>unknown</item>
+    </string-array>
 </resources>
