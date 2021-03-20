@@ -4,3 +4,4 @@ local.properties
 app/release/
 build/
 *.jks
+app/src/main/java/com/example/rickmorty/Data/json.json
