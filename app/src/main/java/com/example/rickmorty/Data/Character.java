@@ -28,10 +28,10 @@ public class Character {
     private String gender;
 
     @JsonProperty("origin")
-    private Origin origin;
+    private Place origin;
 
     @JsonProperty("location")
-    private Location location;
+    private Place location;
 
     @JsonProperty("image")
     private String imageUrl;
@@ -57,9 +57,9 @@ public class Character {
         this.species = values[3];
         this.type = values[4];
         this.gender = values[5];
-        this.origin = new Origin();
+        this.origin = new Place();
         this.origin.setName(values[6]);
-        this.location = new Location();
+        this.location = new Place();
         this.location.setName(values[7]);
         this.like = values[8].equals("1");
         this.image = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
@@ -101,11 +101,11 @@ public class Character {
         return gender;
     }
 
-    public Origin getOrigin() {
+    public Place getOrigin() {
         return origin;
     }
 
-    public Location getLocation() {
+    public Place getLocation() {
         return location;
     }
 
