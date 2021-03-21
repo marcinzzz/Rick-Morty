@@ -17,6 +17,8 @@ import com.example.rickmorty.Data.Data;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -119,5 +121,14 @@ public class MainActivity extends AppCompatActivity {
                 filtered.add(character);
         }
         return filtered.toArray(new Character[0]);
+    }
+
+    private void exportCharacter(Character character) {
+        try {
+            FileOutputStream fos = openFileOutput("character_" + character.getId(), Context.MODE_PRIVATE);
+            fos.write(character.toString().getBytes());
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 }
