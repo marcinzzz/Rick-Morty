@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 characters = data.getCharacters();
                 try {
                     for (Character character : characters) {
+                        character.setLike(false);
                         character.downloadImage();
                     }
                     charactersListView.setAdapter(new MyArrayAdapter(this, data.getCharacters()));

@@ -46,9 +46,18 @@ public class Character {
     private String created;
 
     private Bitmap image;
+    private boolean like;
 
     public void downloadImage() throws ExecutionException, InterruptedException {
         image = new ImageTask().execute(imageUrl).get();
+    }
+
+    public void changeLike() {
+        like = !like;
+    }
+
+    public void setLike(boolean like) {
+        this.like = like;
     }
 
     public int getId() {
@@ -85,6 +94,10 @@ public class Character {
 
     public Bitmap getImage() {
         return image;
+    }
+
+    public boolean isLiked() {
+        return like;
     }
 
     @Override

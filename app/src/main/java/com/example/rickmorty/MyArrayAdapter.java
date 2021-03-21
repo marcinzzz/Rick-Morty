@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -49,6 +50,15 @@ public class MyArrayAdapter extends ArrayAdapter<Character> {
 
         ImageView imageView = rowView.findViewById(R.id.view_image);
         imageView.setImageBitmap(values[position].getImage());
+
+        ImageButton imageButton = rowView.findViewById(R.id.button_like);
+        imageButton.setOnClickListener((v) -> {
+            values[position].changeLike();
+            if (values[position].isLiked())
+                imageButton.setImageResource(R.drawable.ic_baseline_star_24);
+            else
+                imageButton.setImageResource(R.drawable.ic_baseline_star_outline_24);
+        });
 
         return rowView;
     }
