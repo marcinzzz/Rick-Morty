@@ -37,14 +37,19 @@ public class MyArrayAdapter extends ArrayAdapter<Character> {
         imageView.setImageBitmap(values[position].getImage());
 
         ImageButton imageButton = rowView.findViewById(R.id.button_like);
+        setIcon(position, imageButton);
         imageButton.setOnClickListener((v) -> {
             values[position].changeLike();
-            if (values[position].isLiked())
-                imageButton.setImageResource(R.drawable.ic_baseline_star_24);
-            else
-                imageButton.setImageResource(R.drawable.ic_baseline_star_outline_24);
+            setIcon(position, imageButton);
         });
 
         return rowView;
+    }
+
+    private void setIcon(int position, ImageButton imageButton) {
+        if (values[position].isLiked())
+            imageButton.setImageResource(R.drawable.ic_baseline_star_24);
+        else
+            imageButton.setImageResource(R.drawable.ic_baseline_star_outline_24);
     }
 }
