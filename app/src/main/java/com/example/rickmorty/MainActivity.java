@@ -17,8 +17,12 @@ import com.example.rickmorty.Data.Data;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -92,7 +96,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         } else {
-            Toast.makeText(this, "NO INTERNET", Toast.LENGTH_LONG).show();
+            importCharacters();
+            charactersListView.setAdapter(new MyArrayAdapter(this, characters));
         }
 
         statusSpinner = findViewById(R.id.spinner_status);
@@ -123,6 +128,22 @@ public class MainActivity extends AppCompatActivity {
         return filtered.toArray(new Character[0]);
     }
 
+    private void exportCharacters() {
+        StringBuilder fileNames = new StringBuilder();
+        for (Character c : characters) {
+            fileNames.append(c.getId()).append(";");
+            exportCharacter(c);
+        }
+        fileNames.deleteCharAt(fileNames.length() - 1);
+
+        try {
+            FileOutputStream fos = openFileOutput("characters", MODE_PRIVATE);
+            fos.write(new String(fileNames).getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void exportCharacter(Character character) {
         try {
             FileOutputStream fos = openFileOutput("character_" + character.getId(), Context.MODE_PRIVATE);
@@ -130,5 +151,47 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+    }
+
+    private void importCharacters() {
+        try {
+            FileInputStream fis = openFileInput("characters");
+            InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
+            BufferedReader reader = new BufferedReader(isr);
+            String characters = reader.readLine();
+            if (characters != null) {
+                String[] ids = characters.split(";");
+                List<Character> imported = new LinkedList<>();
+                for (String s : ids)
+                    imported.add(importCharacter("character_" + s));
+                this.characters = imported.toArray(new Character[0]);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Character importCharacter(String fileName) {
+        try {
+            FileInputStream fis = openFileInput(fileName);
+            InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
+            BufferedReader reader = new BufferedReader(isr);
+            String data = reader.readLine();
+            if (data != null) {
+                Character c = new Character();
+                c.set(data);
+                return c;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        exportCharacters();
     }
 }

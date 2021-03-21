@@ -48,6 +48,23 @@ public class Character {
     private Bitmap image;
     private boolean like;
 
+    public void set(String data) {
+        String[] values = data.split(";");
+
+        this.id = Integer.parseInt(values[0]);
+        this.name = values[1];
+        this.status = values[2];
+        this.species = values[3];
+        this.type = values[4];
+        this.gender = values[5];
+        this.origin = new Origin();
+        this.origin.setName(values[6]);
+        this.location = new Location();
+        this.location.setName(values[7]);
+        this.like = values[8].equals("1");
+        this.image = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+    }
+
     public void downloadImage() throws ExecutionException, InterruptedException {
         image = new ImageTask().execute(imageUrl).get();
     }
@@ -102,19 +119,14 @@ public class Character {
 
     @Override
     public String toString() {
-        return "Character.Character{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", status='" + status + '\'' +
-                ", species='" + species + '\'' +
-                ", type='" + type + '\'' +
-                ", gender='" + gender + '\'' +
-                ", origin=" + origin +
-                ", location=" + location +
-                ", image='" + imageUrl + '\'' +
-                ", episode=" + Arrays.toString(episode) +
-                ", url='" + url + '\'' +
-                ", created='" + created + '\'' +
-                '}';
+        return  id + ";" +
+                name + ";" +
+                status + ";" +
+                species + ";" +
+                type + ";" +
+                gender + ";" +
+                origin.getName() + ";" +
+                location.getName() + ";" +
+                (like ? "1" : "0");
     }
 }
