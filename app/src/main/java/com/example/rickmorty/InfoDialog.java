@@ -25,7 +25,7 @@ public class InfoDialog extends Dialog {
         setContentView(R.layout.dialog_info);
 
         ImageView characterImage = findViewById(R.id.image_character);
-        characterImage.setImageBitmap(character.getImage());
+        characterImage.setImageBitmap(character.getBitmap());
 
         makeItem(R.id.item_name, "NAME", character.getName());
         makeItem(R.id.item_status, "STATUS", character.getStatus());

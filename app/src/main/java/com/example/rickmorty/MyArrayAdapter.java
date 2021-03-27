@@ -34,7 +34,7 @@ public class MyArrayAdapter extends ArrayAdapter<Character> {
         textName.setText(values[position].getName());
 
         ImageView imageView = rowView.findViewById(R.id.view_image);
-        imageView.setImageBitmap(values[position].getImage());
+        imageView.setImageBitmap(values[position].getBitmap());
 
         ImageButton imageButton = rowView.findViewById(R.id.button_like);
         setIcon(position, imageButton);

@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import com.example.rickmorty.ImageTask;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 public class Character {
@@ -45,7 +44,7 @@ public class Character {
     @JsonProperty("created")
     private String created;
 
-    private Bitmap image;
+    private Bitmap bitmap;
     private boolean like;
 
     public void set(String data) {
@@ -62,11 +61,15 @@ public class Character {
         this.location = new Place();
         this.location.setName(values[7]);
         this.like = values[8].equals("1");
-        this.image = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+        this.bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
     }
 
     public void downloadImage() throws ExecutionException, InterruptedException {
-        image = new ImageTask().execute(imageUrl).get();
+        bitmap = new ImageTask().execute(imageUrl).get();
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
     }
 
     public void changeLike() {
@@ -109,8 +112,8 @@ public class Character {
         return location;
     }
 
-    public Bitmap getImage() {
-        return image;
+    public Bitmap getBitmap() {
+        return bitmap;
     }
 
     public boolean isLiked() {
