@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Rick&amp;Morty</string>
 
-    <string name="filter_by">Filter by</string>
-    <string name="filter">Filter</string>
+    <string name="status">Status</string>
+<!--    <string name="filter">Filter</string>-->
 
     <string-array name="status">
         <item>All</item>

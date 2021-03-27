@@ -6,8 +6,11 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -32,11 +35,14 @@ public class MainActivity extends AppCompatActivity {
     private Spinner statusSpinner;
     private InfoDialog infoDialog;
     private Character[] characters;
+    private boolean favourites;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        favourites = false;
 
         charactersListView = findViewById(R.id.view_list);
         charactersListView.setOnItemClickListener((parent, view, position, id) -> {
@@ -109,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
             charactersListView.setAdapter(new MyArrayAdapter(this, characters));
         }
 
+        ImageButton buttonFavourites = findViewById(R.id.button_favourites);
+
         statusSpinner = findViewById(R.id.spinner_status);
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(
                 this,
@@ -117,11 +125,32 @@ public class MainActivity extends AppCompatActivity {
         );
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         statusSpinner.setAdapter(spinnerAdapter);
+        statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                Character[] filtered = filterStatus((String) statusSpinner.getSelectedItem());
+                charactersListView.setAdapter(new MyArrayAdapter(getApplicationContext(), filtered));
+                favourites = false;
+                buttonFavourites.setImageResource(R.drawable.ic_baseline_star_outline_24);
+            }
 
-        Button filterButton = findViewById(R.id.button_filter);
-        filterButton.setOnClickListener((v) -> {
-            Character[] filtered = filterStatus((String) statusSpinner.getSelectedItem());
-            charactersListView.setAdapter(new MyArrayAdapter(this, filtered));
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+
+        });
+
+        buttonFavourites.setOnClickListener((v) -> {
+            favourites = !favourites;
+            Character[] toShow = null;
+            if (favourites) {
+                toShow = filterLike();
+                buttonFavourites.setImageResource(R.drawable.ic_baseline_star_24);
+            } else {
+                toShow = filterStatus((String) statusSpinner.getSelectedItem());
+                buttonFavourites.setImageResource(R.drawable.ic_baseline_star_outline_24);
+            }
+            charactersListView.setAdapter(new MyArrayAdapter(getApplicationContext(), toShow));
         });
     }
 
@@ -132,6 +161,15 @@ public class MainActivity extends AppCompatActivity {
         List<Character> filtered = new LinkedList<>();
         for (Character character : characters) {
             if (character.getStatus().equals(status))
+                filtered.add(character);
+        }
+        return filtered.toArray(new Character[0]);
+    }
+
+    private Character[] filterLike() {
+        List<Character> filtered = new LinkedList<>();
+        for (Character character : characters) {
+            if (character.isLiked())
                 filtered.add(character);
         }
         return filtered.toArray(new Character[0]);
