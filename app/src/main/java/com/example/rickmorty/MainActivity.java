@@ -17,6 +17,12 @@ import com.example.rickmorty.Data.Data;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -77,9 +83,9 @@ public class MainActivity extends AppCompatActivity {
                 characters = data.getCharacters();
                 try {
                     for (Character character : characters) {
-                        character.setLike(false);
                         character.downloadImage();
                     }
+                    importLikes();
                     charactersListView.setAdapter(new MyArrayAdapter(this, data.getCharacters()));
 
                     ExportCharactersTask exportCharactersTask = new ExportCharactersTask(this);
@@ -99,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 //            importCharacters();
+            importLikes();
             charactersListView.setAdapter(new MyArrayAdapter(this, characters));
         }
 
@@ -128,6 +135,44 @@ public class MainActivity extends AppCompatActivity {
                 filtered.add(character);
         }
         return filtered.toArray(new Character[0]);
+    }
+
+    private void exportLikes() {
+        StringBuilder builder = new StringBuilder();
+        for (Character character : characters) {
+            if (character.isLiked())
+                builder.append(character.getId()).append(";");
+        }
+
+        if (builder.length() > 0)
+            builder.deleteCharAt(builder.length() - 1);
+
+        try {
+            FileOutputStream fos = openFileOutput("favourites", Context.MODE_PRIVATE);
+            fos.write(builder.toString().getBytes());
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void importLikes() {
+        try {
+            FileInputStream fis = openFileInput("favourites");
+            InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
+            BufferedReader reader = new BufferedReader(isr);
+            String likes = reader.readLine();
+            if (likes != null) {
+                String[] likesArray = likes.split(";");
+                for (String s : likesArray) {
+                    int id = Integer.parseInt(s);
+                    if (id - 1 < characters.length)
+                        characters[id - 1].setLike(true);
+                }
+            }
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+
     }
 
 //    private void exportCharacters() {
@@ -194,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
+        exportLikes();
 //        exportCharacters();
     }
 }
