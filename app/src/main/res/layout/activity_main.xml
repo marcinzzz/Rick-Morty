@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_baseline_star_outline_24"
+            android:src="@drawable/ic_star_outline"
             android:background="@null"/>
 
     </RelativeLayout>

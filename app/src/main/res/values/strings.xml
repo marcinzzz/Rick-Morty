@@ -2,7 +2,16 @@
     <string name="app_name">Rick&amp;Morty</string>
 
     <string name="status">Status</string>
-<!--    <string name="filter">Filter</string>-->
+
+    <string name="url_characters">https://rickandmortyapi.com/api/character/</string>
+
+    <string name="error_characters">SOMETHING WENT WRONG, COULDN\'T GET CHARACTERS</string>
+    <string name="error_images">SOMETHING WENT WRONG, COULDN\'T GET IMAGES</string>
+
+    <string name="file_favourites">favourites</string>
+    <string name="file_characters">characters</string>
+    <string name="file_character">character_</string>
+    <string name="file_image">image_</string>
 
     <string-array name="status">
         <item>All</item>

@@ -29,7 +29,10 @@ public class ExportCharactersTask extends AsyncTask<Character, Void, Void> {
         fileNames.deleteCharAt(fileNames.length() - 1);
 
         try {
-            FileOutputStream fos = context.get().openFileOutput("characters", MODE_PRIVATE);
+            FileOutputStream fos = context.get().openFileOutput(
+                    context.get().getResources().getString(R.string.file_characters),
+                    MODE_PRIVATE
+            );
             fos.write(new String(fileNames).getBytes());
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,9 +43,15 @@ public class ExportCharactersTask extends AsyncTask<Character, Void, Void> {
     private void exportCharacter(Character character) {
         int id = character.getId();
         try {
-            FileOutputStream fos = context.get().openFileOutput("character_" + id, MODE_PRIVATE);
+            FileOutputStream fos = context.get().openFileOutput(
+                    context.get().getResources().getString(R.string.file_character) + id,
+                    MODE_PRIVATE
+            );
             fos.write(character.toString().getBytes());
-            FileOutputStream img = context.get().openFileOutput("image_" + id, MODE_PRIVATE);
+            FileOutputStream img = context.get().openFileOutput(
+                    context.get().getResources().getString(R.string.file_image) + id,
+                    MODE_PRIVATE
+            );
             character.getBitmap().compress(Bitmap.CompressFormat.JPEG, 100, img);
         } catch (IOException exception) {
             exception.printStackTrace();

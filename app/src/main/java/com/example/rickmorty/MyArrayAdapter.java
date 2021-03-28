@@ -14,7 +14,7 @@ import com.example.rickmorty.Data.Character;
 
 public class MyArrayAdapter extends ArrayAdapter<Character> {
     private final Context context;
-    private Character[] values;
+    private final Character[] values;
 
     public MyArrayAdapter(Context context, Character[] values) {
         super(context, -1, values);
@@ -48,8 +48,8 @@ public class MyArrayAdapter extends ArrayAdapter<Character> {
 
     private void setIcon(int position, ImageButton imageButton) {
         if (values[position].isLiked())
-            imageButton.setImageResource(R.drawable.ic_baseline_star_24);
+            imageButton.setImageResource(R.drawable.ic_star);
         else
-            imageButton.setImageResource(R.drawable.ic_baseline_star_outline_24);
+            imageButton.setImageResource(R.drawable.ic_star_outline);
     }
 }

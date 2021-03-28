@@ -9,7 +9,6 @@ import com.example.rickmorty.Data.Character;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
@@ -26,7 +25,9 @@ public class ImportCharactersTask extends AsyncTask<Void, Void, Character[]> {
     @Override
     protected Character[] doInBackground(Void... voids) {
         try {
-            FileInputStream fis = context.get().openFileInput("characters");
+            FileInputStream fis = context.get().openFileInput(
+                    context.get().getResources().getString(R.string.file_characters)
+            );
             InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
             BufferedReader reader = new BufferedReader(isr);
             String characters = reader.readLine();
@@ -45,14 +46,18 @@ public class ImportCharactersTask extends AsyncTask<Void, Void, Character[]> {
 
     private Character importCharacter(String index) {
         try {
-            FileInputStream fis = context.get().openFileInput("character_" + index);
+            FileInputStream fis = context.get().openFileInput(
+                    context.get().getResources().getString(R.string.file_character) + index
+            );
             InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
             BufferedReader reader = new BufferedReader(isr);
             String data = reader.readLine();
             if (data != null) {
                 Character c = new Character();
                 c.set(data);
-                FileInputStream img = context.get().openFileInput("image_" + index);
+                FileInputStream img = context.get().openFileInput(
+                        context.get().getResources().getString(R.string.file_image) + index
+                );
                 Bitmap bitmap = BitmapFactory.decodeStream(img);
                 c.setBitmap(bitmap);
                 return c;
