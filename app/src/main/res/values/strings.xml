@@ -4,7 +4,7 @@
     <string name="status">Status</string>
     <string name="more">more</string>
 
-    <string name="url_characters">https://rickandmortyapi.com/api/character/?page=1</string>
+    <string name="url_characters">https://rickandmortyapi.com/api/character/?page=</string>
 
     <string name="error_characters">SOMETHING WENT WRONG, COULDN\'T GET CHARACTERS</string>
     <string name="error_images">SOMETHING WENT WRONG, COULDN\'T GET IMAGES</string>

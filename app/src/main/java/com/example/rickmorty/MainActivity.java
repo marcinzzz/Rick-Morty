@@ -25,6 +25,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private InfoDialog infoDialog;
     private Character[] characters;
     private boolean favourites;
+    private int page;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         favourites = false;
+        page = 1;
 
         charactersListView = findViewById(R.id.view_list);
         statusSpinner = findViewById(R.id.spinner_status);
@@ -49,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         Button buttonMore = findViewById(R.id.button_more_characters);
 
         if (isConnected())
-            importDataFromInternet();
+            importDataFromInternet(page);
         else
             importDataFromFile();
 
@@ -96,7 +100,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         buttonMore.setOnClickListener((v) -> {
-
+            if (page < 34)
+                importDataFromInternet(++page);
         });
     }
 
@@ -107,20 +112,26 @@ public class MainActivity extends AppCompatActivity {
         exportLikes();
     }
 
-    private void importDataFromInternet() {
+    private void importDataFromInternet(int page) {
         try {
-            String json = new JsonTask().execute(getResources().getString(R.string.url_characters)).get();
+            String json = new JsonTask().execute(getResources().getString(R.string.url_characters) + page).get();
 
             ObjectMapper mapper = new ObjectMapper();
             Data data = mapper.readValue(json, Data.class);
-            characters = data.getCharacters();
+            if (characters == null) {
+                characters = data.getCharacters();
+            } else {
+                ArrayList<Character> array = new ArrayList<>(Arrays.asList(characters));
+                array.addAll(Arrays.asList(data.getCharacters()));
+                characters = array.toArray(new Character[0]);
+            }
 
             for (Character character : characters) {
                 character.downloadImage();
             }
 
             importLikes();
-            charactersListView.setAdapter(new MyArrayAdapter(this, data.getCharacters()));
+            charactersListView.setAdapter(new MyArrayAdapter(this, characters));
 
             ExportCharactersTask exportCharactersTask = new ExportCharactersTask(this);
             exportCharactersTask.execute(characters);
