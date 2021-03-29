@@ -1,6 +1,8 @@
 # Rick and Morty
 KN Solvro Rekrutacja
 
+!!! W trakcie rozwoju !!!
+
 ### Co się udało zrobić
 
 :heavy_check_mark: pobierz oraz wyświetl listę postaci (https://rickandmortyapi.com/api/character/)
