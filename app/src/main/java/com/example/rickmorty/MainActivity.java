@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private Character[] characters;
     private boolean favourites;
     private int page;
+    private boolean fatalError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         favourites = false;
+        fatalError = false;
         page = 1;
 
         charactersListView = findViewById(R.id.view_list);
@@ -68,10 +70,12 @@ public class MainActivity extends AppCompatActivity {
         statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                Character[] filtered = filterStatus((String) statusSpinner.getSelectedItem());
-                charactersListView.setAdapter(new MyArrayAdapter(getApplicationContext(), filtered));
-                favourites = false;
-                buttonFavourites.setImageResource(R.drawable.ic_star_outline);
+                if (!fatalError) {
+                    Character[] filtered = filterStatus((String) statusSpinner.getSelectedItem());
+                    charactersListView.setAdapter(new MyArrayAdapter(getApplicationContext(), filtered));
+                    favourites = false;
+                    buttonFavourites.setImageResource(R.drawable.ic_star_outline);
+                }
             }
 
             @Override
@@ -87,20 +91,22 @@ public class MainActivity extends AppCompatActivity {
         });
 
         buttonFavourites.setOnClickListener((v) -> {
-            favourites = !favourites;
-            Character[] toShow;
-            if (favourites) {
-                toShow = filterLike();
-                buttonFavourites.setImageResource(R.drawable.ic_star);
-            } else {
-                toShow = filterStatus((String) statusSpinner.getSelectedItem());
-                buttonFavourites.setImageResource(R.drawable.ic_star_outline);
+            if (!fatalError) {
+                favourites = !favourites;
+                Character[] toShow;
+                if (favourites) {
+                    toShow = filterLike();
+                    buttonFavourites.setImageResource(R.drawable.ic_star);
+                } else {
+                    toShow = filterStatus((String) statusSpinner.getSelectedItem());
+                    buttonFavourites.setImageResource(R.drawable.ic_star_outline);
+                }
+                charactersListView.setAdapter(new MyArrayAdapter(getApplicationContext(), toShow));
             }
-            charactersListView.setAdapter(new MyArrayAdapter(getApplicationContext(), toShow));
         });
 
         buttonMore.setOnClickListener((v) -> {
-            if (page < 34)
+            if (!fatalError && page < 34)
                 importDataFromInternet(++page);
         });
     }
@@ -109,7 +115,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
-        exportLikes();
+        if (!fatalError)
+            exportLikes();
     }
 
     private void importDataFromInternet(int page) {
@@ -149,6 +156,11 @@ public class MainActivity extends AppCompatActivity {
     private void importDataFromFile() {
         try {
             characters = new ImportCharactersTask(this).execute().get();
+            if (characters == null) {
+                fatalError = true;
+                Toast.makeText(this, R.string.error_characters, Toast.LENGTH_LONG).show();
+                return;
+            }
             importLikes();
             charactersListView.setAdapter(new MyArrayAdapter(this, characters));
         } catch (ExecutionException | InterruptedException e) {
