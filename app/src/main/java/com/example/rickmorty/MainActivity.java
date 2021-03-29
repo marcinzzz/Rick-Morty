@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -45,57 +46,12 @@ public class MainActivity extends AppCompatActivity {
         charactersListView = findViewById(R.id.view_list);
         statusSpinner = findViewById(R.id.spinner_status);
         ImageButton buttonFavourites = findViewById(R.id.button_favourites);
+        Button buttonMore = findViewById(R.id.button_more_characters);
 
-        String json = null;
-        Data data = null;
-        if (isConnected()) {
-            try {
-                json = new JsonTask().execute(getResources().getString(R.string.url_characters)).get();
-            } catch (ExecutionException | InterruptedException e) {
-                Toast.makeText(
-                        this,
-                        getResources().getString(R.string.error_characters),
-                        Toast.LENGTH_LONG
-                ).show();
-            }
-
-            if (json != null) {
-                ObjectMapper mapper = new ObjectMapper();
-                try {
-                    data = mapper.readValue(json, Data.class);
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                Toast.makeText(
-                        this,
-                        getResources().getString(R.string.error_characters),
-                        Toast.LENGTH_LONG
-                ).show();
-            }
-
-            if (data != null) {
-                characters = data.getCharacters();
-                try {
-                    for (Character character : characters) {
-                        character.downloadImage();
-                    }
-                    importLikes();
-                    charactersListView.setAdapter(new MyArrayAdapter(this, data.getCharacters()));
-
-                    ExportCharactersTask exportCharactersTask = new ExportCharactersTask(this);
-                    exportCharactersTask.execute(characters);
-                } catch (ExecutionException | InterruptedException e) {
-                    Toast.makeText(
-                            this,
-                            getResources().getString(R.string.error_images),
-                            Toast.LENGTH_LONG
-                    ).show();
-                }
-            }
-        } else {
+        if (isConnected())
+            importDataFromInternet();
+        else
             importDataFromFile();
-        }
 
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(
                 this,
@@ -138,6 +94,10 @@ public class MainActivity extends AppCompatActivity {
             }
             charactersListView.setAdapter(new MyArrayAdapter(getApplicationContext(), toShow));
         });
+
+        buttonMore.setOnClickListener((v) -> {
+
+        });
     }
 
     @Override
@@ -145,6 +105,34 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
 
         exportLikes();
+    }
+
+    private void importDataFromInternet() {
+        try {
+            String json = new JsonTask().execute(getResources().getString(R.string.url_characters)).get();
+
+            ObjectMapper mapper = new ObjectMapper();
+            Data data = mapper.readValue(json, Data.class);
+            characters = data.getCharacters();
+
+            for (Character character : characters) {
+                character.downloadImage();
+            }
+
+            importLikes();
+            charactersListView.setAdapter(new MyArrayAdapter(this, data.getCharacters()));
+
+            ExportCharactersTask exportCharactersTask = new ExportCharactersTask(this);
+            exportCharactersTask.execute(characters);
+        } catch (ExecutionException | InterruptedException e) {
+            Toast.makeText(
+                    this,
+                    getResources().getString(R.string.error_characters),
+                    Toast.LENGTH_LONG
+            ).show();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     private void importDataFromFile() {
