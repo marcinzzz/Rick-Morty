@@ -6,10 +6,10 @@ import java.util.Arrays;
 
 public class Data {
     @JsonProperty("info")
-    Info info;
+    private Info info;
 
     @JsonProperty("results")
-    Character[] characters;
+    private Character[] characters;
 
     @Override
     public String toString() {
@@ -20,5 +20,9 @@ public class Data {
 
     public Character[] getCharacters() {
         return characters;
+    }
+
+    public Info getInfo() {
+        return info;
     }
 }
